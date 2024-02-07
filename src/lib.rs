@@ -10,6 +10,8 @@ pub mod error;
 
 type Result<T, E = error::RuntimeContractError> = core::result::Result<T, E>;
 
+pub type RuntimeContractFunction<T> = dyn Fn(T) -> Result<T>;
+
 /// Checks an arbitrary condition expressed by the given predicate. This is most useful for validating arguments at the _start_ of a function. You must provide an error message, so it often makes sense to call `requires` once for each argument. This allows for passing more specific error messages back to the caller.
 ///
 /// # Examples
@@ -94,7 +96,7 @@ where
 /// assert!(five_result.is_ok());
 /// assert_eq!(five_result.unwrap(), 5);
 ///
-/// // In the below, the output value doesn't satisfy the contract since `5 + -5 = 5 - 5` is not greater than 0.
+/// // In the below, the output value doesn't satisfy the contract since `5 + - 5 = 5 - 5` is not greater than 0.
 /// assert!(add_two(5, -5).is_err());
 /// ```
 ///
