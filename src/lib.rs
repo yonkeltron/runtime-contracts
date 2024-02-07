@@ -1,6 +1,11 @@
 //! Structured, understandable runtime contracts.
 //!
+//! This crate wishes to make it easier for practioners building software to use and understand Programmig-by-Contract. The philosophy is directly inspired by the [Design-by-Contract](https://en.wikipedia.org/wiki/Design_by_contract) (DbC) concept expressed by noted Computer Scientist, [Dr. Betrand Meyer](https://en.wikipedia.org/wiki/Bertrand_Meyer) when designing the [Eiffel programming language](https://en.wikipedia.org/wiki/Eiffel_(programming_language)) in 1986.
 //!
+//! Additionally, much thanks goes to the [`contracts`](https://crates.io/crates/contracts) crate which implements contacts as procedural macros. Definitely check it out!
+//!
+//! While many languages have contract libraries, many opt to compile them only in debug and test builds. The reasoning behind this choice seems to be that they don't wish to incur a performance penalty in production. A notable exception is [Racket's contracts module](https://docs.racket-lang.org/reference/contracts.html), itself a [work of art](https://docs.racket-lang.org/guide/contracts.html). In this library, we eschew this concern in the name of both runtime safety and program correctness.
+
 pub mod error;
 
 type Result<T, E = error::RuntimeContractError> = core::result::Result<T, E>;
@@ -8,6 +13,8 @@ type Result<T, E = error::RuntimeContractError> = core::result::Result<T, E>;
 /// Checks an arbitrary condition expressed by the given predicate. This is most useful for validating arguments at the _start_ of a function. You must provide an error message, so it often makes sense to call `requires` once for each argument. This allows for passing more specific error messages back to the caller.
 ///
 /// # Examples
+///
+/// Though these example use the crate's own error type, you can substitue whatever you wish so long as it works.
 ///
 /// ```
 /// use runtime_contracts::{requires, error::RuntimeContractError};
@@ -47,7 +54,7 @@ where
     Ok(())
   } else {
     let err_msg = format!("contract validation failed: {}", message);
-    let err = error::RuntimeContractError::RequiresValidationFailure(err_msg);
+    let err = error::RuntimeContractError::RequiresFailure(err_msg);
 
     Err(err)
   }
@@ -56,6 +63,8 @@ where
 /// Checks an arbitrary condition expressed in a predicate run against a given value. If the condition is satisfied(read: if the predicate evaluates to true) this function yields the value passed to it. Ergo, it is most useful for checking return values at the _end_ of a function. You must provide an error message in case of failure.
 ///
 /// # Examples
+///
+/// Though these example use the crate's own error type, you can substitue whatever you wish so long as it works.
 ///
 /// ```
 /// use runtime_contracts::{ensures, error::RuntimeContractError};
@@ -85,7 +94,7 @@ where
     Ok(value)
   } else {
     let err_msg = format!("contract validation failed: {}", message);
-    let err = error::RuntimeContractError::EnsuresValidationFailure(err_msg);
+    let err = error::RuntimeContractError::EnsuresFailure(err_msg);
 
     Err(err)
   }
