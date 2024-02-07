@@ -44,7 +44,20 @@ type Result<T, E = error::RuntimeContractError> = core::result::Result<T, E>;
 /// assert!(add_two(-2, 3).is_ok());
 /// ```
 ///
-///  However, what if the number in question is obtained from an external source? In this case, the external source may provide malformed input! For this reason, it is especially useful to use `requires` to validate input.
+///  However, what if the number in question is obtained from an external source? In this case, the external source may provide malformed input! For this reason, it is especially useful to use `requires` to validate input. You can even use the provided combinators on Rust's Result type to chain contracts into a single statement:
+///
+/// ```
+/// use runtime_contracts::{requires, error::RuntimeContractError};
+///
+/// fn add_two(i: i32, j: i32) -> Result<i32, RuntimeContractError> {
+///   requires(|| i > 0, "i must be greater than 0")
+///     .and_then(|_| requires(|| j > 0, "j must be greater than 0"))?;
+///
+///   Ok(i + j)
+/// }
+///
+/// assert!(add_two(2, 3).is_ok());
+/// ```
 pub fn requires<F, M>(pred: F, message: M) -> Result<()>
 where
   F: Fn() -> bool,
@@ -81,9 +94,10 @@ where
 /// assert!(five_result.is_ok());
 /// assert_eq!(five_result.unwrap(), 5);
 ///
-/// // In the below example, the output doesn't satisfy the contract since 0 is not greater than 0.
+/// // In the below, the output value doesn't satisfy the contract since `5 + -5 = 5 - 5` is not greater than 0.
 /// assert!(add_two(5, -5).is_err());
 /// ```
+///
 pub fn ensures<T, F, M>(value: T, predicate: F, message: M) -> Result<T>
 where
   T: Clone,
