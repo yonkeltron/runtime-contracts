@@ -1,10 +1,17 @@
 //! Structured, understandable runtime contracts.
 //!
-//! This crate wishes to make it easier for practioners building software to use and understand Programmig-by-Contract. The philosophy is directly inspired by the [Design-by-Contract](https://en.wikipedia.org/wiki/Design_by_contract) (DbC) concept expressed by noted Computer Scientist, [Dr. Betrand Meyer](https://en.wikipedia.org/wiki/Bertrand_Meyer) when designing the [Eiffel programming language](https://en.wikipedia.org/wiki/Eiffel_(programming_language)) in 1986.
+//! This crate wishes to make it easier for practitioners building software to use and understand Programming-by-Contract.
+//! The philosophy is directly inspired by the [Design-by-Contract](https://en.wikipedia.org/wiki/Design_by_contract) (DbC) 
+//! concept expressed by noted Computer Scientist, [Dr. Betrand Meyer](https://en.wikipedia.org/wiki/Bertrand_Meyer) when 
+//! designing the [Eiffel programming language](https://en.wikipedia.org/wiki/Eiffel_(programming_language)) in 1986.
 //!
-//! Additionally, much thanks goes to the [`contracts`](https://crates.io/crates/contracts) crate which implements contacts as procedural macros. Definitely check it out!
+//! Additionally, much thanks goes to the [`contracts`](https://crates.io/crates/contracts) crate which implements contacts 
+//! as procedural macros. Definitely check it out!
 //!
-//! While many languages have contract libraries, many opt to compile them only in debug and test builds. The reasoning behind this choice seems to be that they don't wish to incur a performance penalty in production. A notable exception is [Racket's contracts module](https://docs.racket-lang.org/reference/contracts.html), itself a [work of art](https://docs.racket-lang.org/guide/contracts.html). In this library, we eschew this concern in the name of both runtime safety and program correctness.
+//! While many languages have contract libraries, many opt to compile them only in debug and test builds. The reasoning behind 
+//! this choice seems to be that they don't wish to incur a performance penalty in production. 
+//! A notable exception is [Racket's contracts module](https://docs.racket-lang.org/reference/contracts.html), itself a [work of art](https://docs.racket-lang.org/guide/contracts.html). 
+//! In this library, we eschew this concern in the name of both runtime safety and program correctness.
 
 pub mod error;
 
@@ -12,11 +19,13 @@ type Result<T, E = error::RuntimeContractError> = core::result::Result<T, E>;
 
 pub type RuntimeContractFunction<T> = dyn Fn(T) -> Result<T>;
 
-/// Checks an arbitrary condition expressed by the given predicate. This is most useful for validating arguments at the _start_ of a function. You must provide an error message, so it often makes sense to call `requires` once for each argument. This allows for passing more specific error messages back to the caller.
+/// Checks an arbitrary condition expressed by the given predicate. This is most useful for validating arguments at the _start_ 
+/// of a function. You must provide an error message, so it often makes sense to call `requires` once for each argument. This allows 
+/// for passing more specific error messages back to the caller.
 ///
 /// # Examples
 ///
-/// Though these example use the crate's own error type, you can substitue whatever you wish so long as it works.
+/// Though these example use the crate's own error type, you can substitute whatever you wish so long as it works.
 ///
 /// ```
 /// use runtime_contracts::{requires, error::RuntimeContractError};
@@ -31,7 +40,8 @@ pub type RuntimeContractFunction<T> = dyn Fn(T) -> Result<T>;
 /// assert!(add_two(2, 3).is_ok());
 /// ```
 ///
-/// The above example seem a bit silly since the usage of `i32` could just as easily be changed to `u32` to prevent passing in a negative number literal. For example, the following fails to compile:
+/// The above example seem a bit silly since the usage of `i32` could just as easily be changed to `u32` to prevent passing 
+/// in a negative number literal. For example, the following fails to compile:
 ///
 /// ```compile_fail
 /// use runtime_contracts::{requires, error::RuntimeContractError};
@@ -46,7 +56,9 @@ pub type RuntimeContractFunction<T> = dyn Fn(T) -> Result<T>;
 /// assert!(add_two(-2, 3).is_ok());
 /// ```
 ///
-///  However, what if the number in question is obtained from an external source? In this case, the external source may provide malformed input! For this reason, it is especially useful to use `requires` to validate input. You can even use the provided combinators on Rust's Result type to chain contracts into a single statement:
+/// However, what if the number in question is obtained from an external source? In this case, the external source may provide 
+/// malformed input! For this reason, it is especially useful to use `requires` to validate input. You can even use the provided 
+/// combinator on Rust's Result type to chain contracts into a single statement:
 ///
 /// ```
 /// use runtime_contracts::{requires, error::RuntimeContractError};
@@ -75,11 +87,13 @@ where
   }
 }
 
-/// Checks an arbitrary condition expressed in a predicate run against a given value. If the condition is satisfied(read: if the predicate evaluates to true) this function yields the value passed to it. Ergo, it is most useful for checking return values at the _end_ of a function. You must provide an error message in case of failure.
+/// Checks an arbitrary condition expressed in a predicate run against a given value. If the condition is satisfied(read: if the 
+/// predicate evaluates to true) this function yields the value passed to it. Ergo, it is most useful for checking return values 
+/// at the _end_ of a function. You must provide an error message in case of failure.
 ///
 /// # Examples
 ///
-/// Though these example use the crate's own error type, you can substitue whatever you wish so long as it works.
+/// Though these example use the crate's own error type, you can substitute whatever you wish so long as it works.
 ///
 /// ```
 /// use runtime_contracts::{ensures, error::RuntimeContractError};
