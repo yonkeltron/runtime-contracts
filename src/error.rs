@@ -8,4 +8,6 @@ pub enum RuntimeContractError {
   RequiresFailure(String),
   #[error("ensures validation failed: {0}")]
   EnsuresFailure(String),
+  #[error("check validation failed: {0}")]
+  CheckFailure(String),
 }
