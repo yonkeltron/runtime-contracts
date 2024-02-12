@@ -1,6 +1,6 @@
 [package]
 name = "runtime-contracts"
-version = "0.1.3"
+version = "0.2.0"
 edition = "2021"
 description = "Structured, understandable runtime contracts."
 authors = ["Jonathan E. Magen <59451+yonkeltron@users.noreply.github.com>"]

@@ -18,14 +18,27 @@
 //! Though this example uses the crate's own error type, you can substitute whatever you wish so long as it works.
 //!
 //! ```
-//! use runtime_contracts::{check, ensures, requires, error::RuntimeContractError};
+//! use runtime_contracts::{check, ensures, requires, error::RuntimeContractError, Result};
+//!
+//! # struct Account {
+//! #   pub balance: usize,
+//! # }
+//! # impl Account {
+//! #   pub fn add_to_balance(&self, amount: usize) -> Result<usize> {
+//! #     Ok(self.balance + amount)
+//! #   }
+//! # }
+//! # fn load_account(i: &str) -> Account {
+//! #   Account { balance: 613 }
+//! # }
 //!
 //! fn refund_loyalty_points(account_id: &str, point_amount: usize) -> Result<usize> {
 //!   requires(|| account_id.len() == 32, "malformed account ID")?;
 //!   requires(|| point_amount % 2 == 0, "attempting to refund an odd number of points")?;
 //!
-//!   let account = load_account(account_id)?;
-//!   let starting_balance = load_account.balance;
+//!   let account = load_account(account_id);
+//!   let starting_balance = account.balance;
+//!   let closing_balance = account.add_to_balance(point_amount)?;
 //!
 //!   ensures(closing_balance, |balance| balance - point_amount == starting_balance, "points were not added to account")
 //! }
@@ -33,7 +46,7 @@
 
 pub mod error;
 
-type Result<T, E = error::RuntimeContractError> = core::result::Result<T, E>;
+pub type Result<T, E = error::RuntimeContractError> = core::result::Result<T, E>;
 
 pub type RuntimeContractFunction<T> = dyn Fn(T) -> Result<T>;
 
